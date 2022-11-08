@@ -1,0 +1,3 @@
+3.
+
+b. In the given collection of tree images the difference on random imagepoints is to high, following of the changability of singular leafs.

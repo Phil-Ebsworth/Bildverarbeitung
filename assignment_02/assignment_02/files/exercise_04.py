@@ -1,6 +1,7 @@
 from os import path as osp
 import numpy as np
 from utils import gauss_function, load_image, show_image, check_arrays
+import math
 
 # Your solution starts here.
 def mean_filter(image, w):
@@ -24,7 +25,7 @@ def mean_filter(image, w):
         for j in range(w, image_height - w):
             for c in range(image_color):
                 block = image[i-w: i+w+1, j-w: j+w+1,c]
-                result[i,j,c] = block.sum()
+                result[i,j,c] = block.sum()/(2*w+1)**2
     # TODO: Exercise 4a)
     return result
             
@@ -44,7 +45,7 @@ def median_filter(image, w):
     # Pad the image corners with zeros to preserve the original resolution.
     #image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
     result = np.zeros_like(image)
-    mid = int((2*w+1)*2 / 2)
+    mid = int((2*w+1)*2 / 2) +1
     for i in range(w, height - w):
         for j in range(w, width - w):
             for c in range(chs):
@@ -68,9 +69,17 @@ def get_gauss_kern_2d(w, sigma):
         A numpy array with shape (2*w+1, 2*w+1) representing a 2d gauss kernel.
         Note that array's values sum to 1.
     """
+    size = 2*w+1
+    result = np.zeros((size,size))
+    for i in range(-w,size - w):
+        for j in range(-w, size -w):
+            t1 = 1 / (2 *math.pi * sigma**2)
+            t2 = (i**2+j**2)/(2*sigma**2)
+            result[i + w, j + w] = t1 * math.exp(- t2)
+    return result
     # TODO: Exercise 4c) Hint: You may use gauss_function implemented in utils.py which is already imported.
-    gauss_kern = np.ones((2*w+1, 2*w+1))
-    return gauss_kern/gauss_kern.sum()
+    #gauss_kern = np.ones((2*w+1, 2*w+1))
+    #return gauss_kern/gauss_kern.sum()
     
 def gauss_filter(image, w, sigma):
     """Applies gauss filtering to the input image.
@@ -86,9 +95,18 @@ def gauss_filter(image, w, sigma):
     height, width, chs = image.shape
     
     # Pad the image corners with zeros to preserve the original resolution.
-    image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
-    result = np.zeros_like(image)
+    #image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
     gauss_kern = get_gauss_kern_2d(w, sigma)[:,:,None]
+
+    result = np.zeros_like(image)
+    mid = int((2*w+1)*2 / 2) +1
+    for i in range(w, height - w):
+        for j in range(w, width - w):
+            for c in range(chs):
+                block = image[i-w: i+w+1, j-w: j+w+1,c]
+                gauss = np.multiply(block,gauss_kern).sum()
+                result[i,j,c] = gauss
+
     # TODO: Exercise 4c)
     return result
 # Your solution ends here.

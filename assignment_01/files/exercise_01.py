@@ -79,7 +79,7 @@ def rgb_to_gray(image_rgb):
             for c in range(color):
                 img_grey[i,j] += image_rgb[i,j,c] * weights[c]
             img_grey[i,j] * 255
-    return img_grey#image_rgb.mean(axis=2, keepdims=True)  TODO: Exercise 1c
+    return img_grey #image_rgb.mean(axis=2, keepdims=True)  TODO: Exercise 1c
 # Your solution ends here
 
 def main():

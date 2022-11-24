@@ -15,17 +15,27 @@ def mean_filter(image, w):
         A numpy array with shape (height, width, channels) representing the filtered image.
         Note that the input image is zero-padded to preserve the original resolution.
     """
-    image_length, image_height, image_color = image.shape
+    height, width, chs = image.shape
     
     # Pad the image corners with zeros to preserve the original resolution.
-    #image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
+    image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
     result = np.zeros_like(image)
 
-    for i in range(w, image_length - w):
-        for j in range(w, image_height - w):
-            for c in range(image_color):
-                block = image[i-w: i+w+1, j-w: j+w+1,c]
-                result[i,j,c] = block.sum()/(2*w+1)**2
+    for i in range(height):
+        for j in range(width):
+            # get patch were currently in and calc mean for every channel
+            patch_c0 = image_padded[i:i+2*w+1,j:j+2*w+1,0]
+            meanc0 = np.mean(patch_c0)
+            result[i,j,0] = meanc0
+
+            patch_c1 = image_padded[i:i+2*w+1,j:j+2*w+1,1]
+            meanc1 = np.mean(patch_c1)
+            result[i,j,1] = meanc1
+
+            patch_c2 = image_padded[i:i+2*w+1,j:j+2*w+1,2]
+            meanc2 = np.mean(patch_c2)
+            result[i,j,2] = meanc2
+
     # TODO: Exercise 4a)
     return result
             
@@ -43,19 +53,23 @@ def median_filter(image, w):
     height, width, chs = image.shape
     
     # Pad the image corners with zeros to preserve the original resolution.
-    #image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
+    image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
     result = np.zeros_like(image)
-    mid = int((2*w+1)*2 / 2) +1
-    for i in range(w, height - w):
-        for j in range(w, width - w):
-            for c in range(chs):
-                block = image[i-w: i+w+1, j-w: j+w+1,c]
-                sorted_block = np.sort(block, axis= None)
-                result[i,j,c] = sorted_block[mid]
-
-
-    
     # TODO: Exercise 4b)
+    for i in range(height):
+        for j in range(width):
+            # get patch were currently in and calc mean for every channel
+            patch_c0 = image_padded[i:i+2*w+1,j:j+2*w+1,0]
+            median_c0 = np.median(patch_c0)
+            result[i,j,0] = median_c0
+
+            patch_c1 = image_padded[i:i+2*w+1,j:j+2*w+1,1]
+            median_c1 = np.median(patch_c1)
+            result[i,j,1] = median_c1
+
+            patch_c2 = image_padded[i:i+2*w+1,j:j+2*w+1,2]
+            median_c2 = np.median(patch_c2)
+            result[i,j,2] = median_c2
     return result
     
 def get_gauss_kern_2d(w, sigma):

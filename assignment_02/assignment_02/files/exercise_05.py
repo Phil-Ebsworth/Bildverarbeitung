@@ -18,12 +18,24 @@ def bilateral_filter(image, w, sigma_d, sigma_r):
         Note that the input image is zero-padded to preserve the original resolution.
     """
     height, width, chs = image.shape
-    
     # Pad the image corners with zeros to preserve the original resolution.
     image_padded = np.pad(image, pad_width=((w,w), (w,w), (0,0)))
     result = np.zeros_like(image)
     gauss_kern_d = get_gauss_kern_2d(w, sigma_d)[:,:,None] # TODO: Solve Exercise 4c) first!
+    gauss_kern_r = get_gauss_kern_2d(w, sigma_r)[:,:,None]
     # TODO: Exercise 5) Hint: You may use gauss_function implemented in utils.py which is already imported.
+    for i in range(w, height - w):
+        for j in range(w, width -w):
+            for c in range(chs):
+                #gauss for pixel distance
+                """ block_d = image[i-w: i+w+1, j-w: j+w+1,c]
+                gauss_d = np.multiply(block_d,gauss_kern_d).sum()
+                result[i,j,c] =  gauss_d """
+                #gauss for color distance
+                """ block_r = image[i-w: i+w+1, j-w: j+w+1,c]
+                gauss_r = np.multiply(block_r,gauss_kern_r).sum()
+                test = np.multiply(gauss_d, gauss_r)
+                result[i,j,c] =  test """
     return result
 # Your solution ends here.
 

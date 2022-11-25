@@ -18,8 +18,15 @@ def ideal_low_pass_filter(y_time, max_frequency):
     """
     height, width = y_time.shape
     y_freq = np.fft.fftshift(np.fft.fft2(y_time))
-    
-    y_filtered_freq = y_freq # TODO: Exercise 7a)
+    y_filtered_freq = y_freq
+    for u in range(height):
+        for v in range(width):
+            D = np.sqrt((u-height/2)**2 + (v-width/2)**(1/2))
+            if D <= max_frequency:
+                y_filtered_freq[u,v] = 1
+            else:
+                y_filtered_freq[u,v] = 0
+    print(y_filtered_freq)
     
     y_filtered_time = np.fft.ifft2(np.fft.ifftshift(y_filtered_freq))
     return y_filtered_time

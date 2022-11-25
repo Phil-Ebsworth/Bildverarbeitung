@@ -14,9 +14,8 @@ def dft_1d(y_time):
 
     n, = y_time.shape
     y_freq = np.zeros_like(y_time) # TODO: Exercise 6a)
-
-    for u in np.arange(n,):
-        for x in np.arange(n,):
+    for u in np.arange(n):
+        for x in np.arange(n):
             y_freq[u] += y_time[x]*np.exp((-1j*2*np.pi*(u*x))  / n)
     
     return y_freq / np.sqrt(n)
@@ -33,7 +32,11 @@ def idft_1d(y_freq):
     n, = y_freq.shape
     
     y_time = np.zeros_like(y_freq) # TODO: Exercise 6b)
-    return y_time
+    for x in np.arange(n):
+        for u in np.arange(n):
+            y_time[x] += y_freq[u] * np.exp(1j*2*np.pi*(u*x)/n)
+
+    return y_time /np.sqrt(n)
 
 def dft_1d_denoise(y_time, threshold=0.25):
     """Applies a threshold to filter out frequencies with low amplitudes.

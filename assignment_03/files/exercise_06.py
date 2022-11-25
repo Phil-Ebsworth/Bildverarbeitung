@@ -11,10 +11,15 @@ def dft_1d(y_time):
     Returns:
         A numpy array with shape (n,) representing the signal in frequency domain.
     """
+
     n, = y_time.shape
-    
     y_freq = np.zeros_like(y_time) # TODO: Exercise 6a)
-    return y_freq
+
+    for u in np.arange(n,):
+        for x in np.arange(n,):
+            y_freq[u] += y_time[x]*np.exp((-1j*2*np.pi*(u*x))  / n)
+    
+    return y_freq / np.sqrt(n)
 
 def idft_1d(y_freq):
     """Transforms a given signal from frequency to time domain.

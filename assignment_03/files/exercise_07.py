@@ -10,7 +10,7 @@ def ideal_low_pass_filter(y_time, max_frequency):
     
 
     Args:
-        y_time: A numpy array with shape (height, width) representing the imput signal in time domain.
+        y_time: A numpy array with shape (height, width) representing the input signal in time domain.
         max_frequency: The maximal frequency to be preserved in the output signal.
 
     Returns:
@@ -18,16 +18,19 @@ def ideal_low_pass_filter(y_time, max_frequency):
     """
     height, width = y_time.shape
     y_freq = np.fft.fftshift(np.fft.fft2(y_time))
-    y_filtered_freq = y_freq
+    
+    y_filtered_freq = y_freq # TODO: Exercise 7a)
+
+    H = np.zeros((height, width), dtype=np.float32)
     for u in range(height):
         for v in range(width):
-            D = np.sqrt((u-height/2)**2 + (v-width/2)**(1/2))
+            D=np.sqrt((u-height/2)**2 + (v-width/2)**2)
             if D <= max_frequency:
-                y_filtered_freq[u,v] = 1
+                H[u,v] = 1
             else:
-                y_filtered_freq[u,v] = 0
-    print(y_filtered_freq)
+                H[u,v] = 0
     
+    y_filtered_freq *= H
     y_filtered_time = np.fft.ifft2(np.fft.ifftshift(y_filtered_freq))
     return y_filtered_time
     
@@ -49,6 +52,19 @@ def ideal_high_pass_filter(y_time, min_frequency):
     y_freq = np.fft.fftshift(np.fft.fft2(y_time))
     
     y_filtered_freq = y_freq # TODO: Exercise 7b)
+
+    Fshift = np.fft.fftshift(y_freq)
+
+    H = np.zeros((height, width), dtype=np.float32)
+    for u in range(height):
+        for v in range(width):
+            D=np.sqrt((u-height/2)**2 + (v-width/2)**2)
+            if D >= min_frequency:
+                H[u,v] = 1
+            else:
+                H[u,v] = 0
+    
+    y_filtered_freq *= H
     
     y_filtered_time = np.fft.ifft2(np.fft.ifftshift(y_filtered_freq))
     return y_filtered_time

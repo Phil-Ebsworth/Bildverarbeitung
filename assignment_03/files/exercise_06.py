@@ -11,14 +11,16 @@ def dft_1d(y_time):
     Returns:
         A numpy array with shape (n,) representing the signal in frequency domain.
     """
-
     n, = y_time.shape
-    y_freq = np.zeros_like(y_time) # TODO: Exercise 6a)
-    for u in np.arange(n):
-        for x in np.arange(n):
-            y_freq[u] += y_time[x]*np.exp((-1j*2*np.pi*(u*x))  / n)
     
-    return y_freq / np.sqrt(n)
+    y_freq = np.zeros_like(y_time) # TODO: Exercise 6a)
+    x = np.arange(n)
+    u = x.reshape((n,1))
+    e = np.exp(-2j * np.pi * u * x / n)
+
+    y_freq = np.dot(e,y_time)
+
+    return y_freq
 
 def idft_1d(y_freq):
     """Transforms a given signal from frequency to time domain.
@@ -32,11 +34,13 @@ def idft_1d(y_freq):
     n, = y_freq.shape
     
     y_time = np.zeros_like(y_freq) # TODO: Exercise 6b)
-    for x in np.arange(n):
-        for u in np.arange(n):
-            y_time[x] += y_freq[u] * np.exp(1j*2*np.pi*(u*x)/n)
+    x = np.arange(n)
+    u = x.reshape((n,1))
+    e = np.exp(2j * np.pi * u * x / n)
 
-    return y_time /np.sqrt(n)
+    y_time = 1/n*np.dot(e,y_freq)
+
+    return y_time
 
 def dft_1d_denoise(y_time, threshold=0.25):
     """Applies a threshold to filter out frequencies with low amplitudes.
@@ -50,6 +54,9 @@ def dft_1d_denoise(y_time, threshold=0.25):
     n, = y_time.shape
     y_freq = dft_1d(y_time)
     # TODO: Exercise 6c)
+    psd = y_freq * np.conj(y_freq)/n
+    y_freq = np.where(psd/np.sqrt(n)<threshold, 0, y_freq)
+
     return idft_1d(y_freq)
 
 def box_filter_1d_time(y_time, w):
@@ -69,6 +76,10 @@ def box_filter_1d_time(y_time, w):
     n, = y_time.shape
     
     y_time_filtered = np.zeros_like(y_time) # TODO: Exercise 6d)
+
+    for i in range(n):
+        y_time_filtered[i] = np.mean(y_time_padded[i:2*w+1+i])
+
     
     return y_time_filtered
 
@@ -87,6 +98,12 @@ def box_filter_1d_freq(y_time, w):
     y_freq = dft_1d(y_time)
     
     y_freq_filtered = np.zeros_like(y_freq) # TODO: Exercise 6d)
+    kernel = np.full(2*w+1, 1/(2*w+1), dtype=np.complex128)
+    n, = y_time.shape
+    n = (n-(2*w+1))/2
+    filter = np.concatenate((np.zeros(int(n)), kernel, np.zeros(int(n))))
+    y_freq_filter = dft_1d(filter)
+    y_freq_filtered = y_freq*y_freq_filter
     
     return idft_1d(y_freq_filtered)
 # Your solution ends here.

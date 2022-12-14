@@ -1,13 +1,12 @@
 from os import path as osp
 import numpy as np
-from utils import show_multiple_images, clip, show_time_and_freq_2d
+from utils import show_multiple_images, clip
 
 # Your solution starts here.
 def main():
     assets = np.load('.assets.npz')
     img_boy_blurred = assets['boy_blurred']
     freq_image = np.fft.fft2(np.fft.fftshift(img_boy_blurred), axes=(0,1))
-    show_time_and_freq_2d(img_boy_blurred[:,:,0], freq_image)
     img_boy_corrected = reconstruct_image(
         img_boy_blurred,
         n=64 # TODO: Exercise 9a) Find and insert the filter width n

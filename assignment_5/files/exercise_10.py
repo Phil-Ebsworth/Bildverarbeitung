@@ -14,8 +14,20 @@ def sobel_x_filter(image_gray):
         A numpy array with shape (height, width, 1) representing the horizontal sobel filtered image.
         Note that the input image is zero-padded to preserve the original resolution.
     """
-    
-    return image_gray # TODO: Exercise 10a)
+    sobel_x = [ [-1,0,1],
+                [-2,0,2],
+                [-1,0,1]]
+    height, width = image_gray.shape[:2]
+    H = np.zeros((height-2, width-2), dtype=np.float32)
+    for u in range(1,height-1):
+        for v in range(1,width-1):
+            try:
+                H[u-1][v-1] = (sobel_x[0][0] * image_gray[u-1][v-1] + sobel_x[0][1] * image_gray[u][v-1] + sobel_x[0][2] * image_gray[u+1][v-1] + 
+                            sobel_x[1][0] * image_gray[u-1][v] + sobel_x[1][1] * image_gray[u][v] + sobel_x[1][2] * image_gray[u+1][v] + 
+                            sobel_x[2][0] * image_gray[u-1][v+1] + sobel_x[2][1] * image_gray[u][v+1] + sobel_x[2][2] * image_gray[u+1][v+1])
+            except:
+                continue
+    return H # TODO: Exercise 10a)
 
 def sobel_y_filter(image_gray):
     """Applies the vertical sobel filter to the input image.
@@ -27,7 +39,19 @@ def sobel_y_filter(image_gray):
         A numpy array with shape (height, width, 1) representing the vertical sobel filtered image.
         Note that the input image is zero-padded to preserve the original resolution.
     """
-
+    sobel_y = [ [-1,-2,-1],
+                [0,0,0],
+                [1,2,1]]
+    height, width = image_gray.shape[:2]
+    H = np.zeros((height, width), dtype=np.float32)
+    for u in range(height):
+        for v in range(width):
+            try:
+                H[u][v] = (sobel_y[0][0] * image_gray[u-1][v-1] + sobel_y[0][1] * image_gray[u][v-1] + sobel_y[0][2] * image_gray[u+1][v-1] + 
+                            sobel_y[1][0] * image_gray[u-1][v] + sobel_y[1][1] * image_gray[u][v] + sobel_y[1][2] * image_gray[u+1][v] + 
+                            sobel_y[2][0] * image_gray[u-1][v+1] + sobel_y[2][1] * image_gray[u][v+1] + sobel_y[2][2] * image_gray[u+1][v+1])
+            except:
+                continue
     return image_gray # TODO: Exercise 10a)
 
 def sobel_combine(sobel_x, sobel_y):

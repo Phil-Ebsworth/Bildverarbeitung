@@ -14,11 +14,15 @@ def sobel_x_filter(image_gray):
         A numpy array with shape (height, width, 1) representing the horizontal sobel filtered image.
         Note that the input image is zero-padded to preserve the original resolution.
     """
+    #define sobel x
     sobel_x = [ [-1,0,1],
                 [-2,0,2],
                 [-1,0,1]]
+    #new image
     height, width = image_gray.shape[:2]
     H = np.zeros((height, width), dtype=np.float32)
+
+    #loop over image_grey, user sobel_x and write value in new image. Try except to pass over border cases
     for u in range(height):
         for v in range(width):
             try:
@@ -39,11 +43,15 @@ def sobel_y_filter(image_gray):
         A numpy array with shape (height, width, 1) representing the vertical sobel filtered image.
         Note that the input image is zero-padded to preserve the original resolution.
     """
+    #define sobel y
     sobel_y = [ [-1,-2,-1],
                 [0,0,0],
                 [1,2,1]]
+    #new image
     height, width = image_gray.shape[:2]
     H = np.zeros((height, width), dtype=np.float32)
+
+    #loop over image_grey, user sobel_y and write value in new image. Try except to pass over border cases
     for u in range(height):
         for v in range(width):
             try:

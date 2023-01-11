@@ -105,8 +105,11 @@ def laplace_filter(image, w, sigma_low, sigma_high):
 
     for u in range(width - (kernel_size -1)):
         for v in range(height - (kernel_size -1)):
-            window = image[u:u+kernel_size, v:v+kernel_size] * kernel
-            I[u,v] = np.sum(window)
+            try:
+                window = image[u:u+kernel_size, v:v+kernel_size] * kernel
+                I[u,v] = np.sum(window)
+            except:
+                continue
 
 
     return I # TODO: Exercise 10b)

@@ -23,6 +23,13 @@ def circular_hough_transform(edges, radiuses):
     hough_space = np.zeros((num_circles, height, width))
     edge_coords = np.stack(np.where(edges), axis=1)
     
+    for idx, k in enumerate(radiuses):
+        for u in (k, width - k):
+            for v in (k, height -k):
+                if edges[u,v]:
+                    hough_space[idx,u,v] += 1 
+                    
+
     # TODO: Exercise 11a)
             
     return hough_space

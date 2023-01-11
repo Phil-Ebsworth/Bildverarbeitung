@@ -89,7 +89,27 @@ def laplace_filter(image, w, sigma_low, sigma_high):
         A numpy array with shape (height, width, channels) representing the filtered image.
     """
     assert sigma_low <= sigma_high
-    return image # TODO: Exercise 10b)
+
+    # I don't get why we have two sigmas...
+    sigma = sigma_high
+    height, width = image.shape[:2]
+
+    kernel_size = 2*w+1
+    x,y = np.meshgrid(np.arange(-kernel_size/2+1,kernel_size/2+1),np.arange(-kernel_size/2+1,kernel_size/2+1))
+    
+    normal = 1 / (2.0 * np.pi * sigma**2)
+
+    kernel = ((x**2 + y**2 - (2.0*sigma**2)) / sigma**4) * np.exp(-(x**2 + y**2) / (2.0*sigma**2)) / normal
+    
+    I = np.zeros_like(image, dtype=float)
+
+    for u in range(width - (kernel_size -1)):
+        for v in range(height - (kernel_size -1)):
+            window = image[u:u+kernel_size, v:v+kernel_size] * kernel
+            I[u,v] = np.sum(window)
+
+
+    return I # TODO: Exercise 10b)
     
 def get_zero_crossing(image_laplace):
     """Finds zero-crossing within the laplacian of an image.

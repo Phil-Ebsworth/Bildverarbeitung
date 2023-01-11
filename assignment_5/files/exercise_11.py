@@ -26,6 +26,7 @@ def circular_hough_transform(edges, radiuses):
     for idx, k in enumerate(radiuses):
         for u in (k, width - k):
             for v in (k, height -k):
+                #if there is an edge at current pixel than add to the hough space. Pixels with max will be circle center
                 if edges[u,v]:
                     hough_space[idx,u,v] += 1 
                     

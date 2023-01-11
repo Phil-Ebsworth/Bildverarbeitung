@@ -24,6 +24,23 @@ def circular_hough_transform(edges, radiuses):
     edge_coords = np.stack(np.where(edges), axis=1)
     
     # TODO: Exercise 11a)
+    #Precomputing all angles to increase the speed of the algorithm
+    theta = np.arange(0,360)*np.pi/180                                              #Extracting all edge coordinates
+    for idx,r in enumerate(radiuses):
+        #Creating a Circle Blueprint
+        bprint = np.zeros((2*(r+1),2*(r+1)))
+        (m,n) = (r+1,r+1)                                                       #Finding out the center of the blueprint
+        for angle in theta:
+            x = int(np.round(r*np.cos(angle)))
+            y = int(np.round(r*np.sin(angle)))
+            bprint[m+x,n+y] = 1
+        constant = np.argwhere(bprint).shape[0]
+        for x,y in edge_coords:                                                       #For each edge coordinates
+            #Centering the blueprint circle over the edges
+            X = [x-m,x+m]                                           #Computing the extreme X values
+            Y= [y-n,y+n]
+            if min(X)>=0 and min(Y)>=0 and max(X)<=height and max(Y)<=width:                              #Computing the extreme Y values
+                hough_space[idx,X[0]:X[1],Y[0]:Y[1]] += bprint
             
     return hough_space
     
@@ -45,6 +62,14 @@ def detect_circles(hough_space, num_circles_per_radius=1):
         np.zeros((num_radiuses, num_circles_per_radius)),
         np.zeros((num_radiuses, num_circles_per_radius))
     ) # TODO: Exercise 11b)
+    for i in range(num_radiuses):
+        greatest_radius = np.argpartition(hough_space[i], -num_circles_per_radius)[-num_circles_per_radius:]
+        rows = greatest_radius//height
+        cols= greatest_radius%height
+
+        centers[0][i] = rows
+        centers[1][i] = cols
+        
     return centers
 # Your solution ends here.
 

@@ -129,19 +129,21 @@ def get_zero_crossing(image_laplace):
     
     for u in range(width):
         for v in range(height):
-            if image_laplace[u][v] == 0:
-                if ((image_laplace[u][v-1] < 0 and image_laplace[u][v+1] > 0) 
-                or (image_laplace[u][v-1] < 0 and image_laplace[u][v+1] < 0) 
-                or (image_laplace[u-1][v] < 0 and image_laplace[u+1][v] > 0) 
-                or (image_laplace[u-1][v] > 0 and image_laplace[u+1][v] < 0)):
-                    zero_crossing[u][v] = True
-            if image_laplace[u][v] < 0:
-                if ((image_laplace[u][v-1] > 0) 
-                or (image_laplace[u][v+1] > 0) 
-                or (image_laplace[u-1][v] > 0) 
-                or (image_laplace[u+1][v] > 0)):
-                    zero_crossing[u][v] = True
-
+            try:
+                if image_laplace[u][v] == 0:
+                    if ((image_laplace[u][v-1] < 0 and image_laplace[u][v+1] > 0) 
+                    or (image_laplace[u][v-1] < 0 and image_laplace[u][v+1] < 0) 
+                    or (image_laplace[u-1][v] < 0 and image_laplace[u+1][v] > 0) 
+                    or (image_laplace[u-1][v] > 0 and image_laplace[u+1][v] < 0)):
+                        zero_crossing[u][v] = True
+                if image_laplace[u][v] < 0:
+                    if ((image_laplace[u][v-1] > 0) 
+                    or (image_laplace[u][v+1] > 0) 
+                    or (image_laplace[u-1][v] > 0) 
+                    or (image_laplace[u+1][v] > 0)):
+                        zero_crossing[u][v] = True
+            except:
+                continue
     return zero_crossing # TODO: Exercise 10c)
 # Your solution ends here.
 
